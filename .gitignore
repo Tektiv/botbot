@@ -1,0 +1,12 @@
+# files
+.vscode
+.env
+.env.local
+package-lock.json
+
+# folders
+build
+node_modules
+
+#config
+config.json
