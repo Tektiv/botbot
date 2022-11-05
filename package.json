@@ -18,7 +18,9 @@
     "discord.js": "^14.6.0",
     "discordx": "^11.4.0",
     "needle": "^3.1.0",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "sequelize": "^6.25.3",
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "@types/needle": "^2.5.3",

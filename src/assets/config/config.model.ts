@@ -4,4 +4,9 @@ export interface IConfig {
     URL: string;
     KEY: string;
   };
+  SQLITE: {
+    USER: string;
+    PASSWORD: string;
+    HOST: string;
+  };
 }

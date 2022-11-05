@@ -9,7 +9,7 @@ export class Config {
     Config.config = JSON.parse(readFileSync('src/assets/config/config.json', 'utf8'));
   }
 
-  static get<T>(path: string, defaultValue: T): T {
+  static get<T>(path: string, defaultValue?: T): T {
     return Utils.getValue(Config.config, path, defaultValue);
   }
 }

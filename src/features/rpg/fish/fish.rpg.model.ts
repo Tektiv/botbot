@@ -1,17 +1,17 @@
-export enum AnimalCrossingFishRarity {
+export enum RPGFishRarity {
   COMMON = 'Common',
   UNCOMMON = 'Uncommon',
   RARE = 'Rare',
   ULTRA_RARE = 'Ultra-rare',
 }
 
-export class AnimalCrossingFish {
+export class RPGFish {
   name: string;
   catch: {
     phrase: string;
     joke: string;
   };
-  rarity: AnimalCrossingFishRarity;
+  rarity: RPGFishRarity;
   price: number;
   icon: string;
 
@@ -29,13 +29,13 @@ export class AnimalCrossingFish {
 
   get weight(): number {
     switch (this.rarity) {
-      case AnimalCrossingFishRarity.ULTRA_RARE:
+      case RPGFishRarity.ULTRA_RARE:
         return 1;
-      case AnimalCrossingFishRarity.RARE:
+      case RPGFishRarity.RARE:
         return 5;
-      case AnimalCrossingFishRarity.UNCOMMON:
+      case RPGFishRarity.UNCOMMON:
         return 20;
-      case AnimalCrossingFishRarity.COMMON:
+      case RPGFishRarity.COMMON:
       default:
         return 100;
     }
@@ -43,13 +43,13 @@ export class AnimalCrossingFish {
 
   get raritySymbol(): string {
     switch (this.rarity) {
-      case AnimalCrossingFishRarity.ULTRA_RARE:
+      case RPGFishRarity.ULTRA_RARE:
         return '🟠';
-      case AnimalCrossingFishRarity.RARE:
+      case RPGFishRarity.RARE:
         return '🟡';
-      case AnimalCrossingFishRarity.UNCOMMON:
+      case RPGFishRarity.UNCOMMON:
         return '🟢';
-      case AnimalCrossingFishRarity.COMMON:
+      case RPGFishRarity.COMMON:
       default:
         return '⚪️';
     }

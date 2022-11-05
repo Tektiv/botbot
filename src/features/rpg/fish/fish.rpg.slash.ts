@@ -1,12 +1,12 @@
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { AnimalCrossingService } from './acnh.service';
+import { RPGFishService } from './fish.rpg.service';
 
 @Discord()
-export class AnimalCrossingSlash {
+export class RPGFishSlash {
   @Slash({ description: "Hope you'll catch something nice!" })
-  fish(interaction: CommandInteraction) {
-    const fish = AnimalCrossingService.fish();
+  async fish(interaction: CommandInteraction) {
+    const fish = await RPGFishService.fish(interaction.user);
 
     const embed = new EmbedBuilder()
       .setColor(0x0099ff)

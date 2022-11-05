@@ -6,8 +6,9 @@ import type { Interaction, Message } from 'discord.js';
 import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import { EmojiService } from 'features/emoji/emoji.service';
-import { AnimalCrossingService } from 'features/acnh/acnh.service';
 import { Config } from 'assets/config/config.service';
+import { SQLite } from 'resources/sqlite/sqlite.service';
+import { RPGService } from 'features/rpg/rpg.service';
 
 export const bot = new Client({
   intents: [
@@ -31,9 +32,8 @@ bot.once('ready', async () => {
   // Synchronize applications commands with Discord
   await bot.initApplicationCommands();
 
-  Config.load();
   await EmojiService.init();
-  await AnimalCrossingService.init();
+  await RPGService.init();
 
   // To clear all guild commands, uncomment this line,
   // This is useful when moving from guild commands to global commands
@@ -62,6 +62,9 @@ async function run() {
   if (!BOT_TOKEN) {
     throw Error('Could not find BOT_TOKEN in your environment');
   }
+
+  SQLite.init();
+
   await bot.login(BOT_TOKEN);
 }
 
