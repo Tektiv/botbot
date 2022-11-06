@@ -10,7 +10,7 @@ export class BotbotMessageEvent {
   @Guard(UserGuard.BotbotMessage)
   async cleanEmojisInMessage([message]: ArgsOf<'messageCreate'>) {
     const emojis = (message.content.match(RegExps.customEmojis) || [])
-      .filter((emoji) => EmojiService.customEmojis[emoji.match(RegExps.customEmoji)![1]] != null)
+      .filter((emoji) => EmojiService.emojisRepo[emoji.match(RegExps.customEmoji)![1]] != null)
       .removeDuplicates();
     await Promise.all(
       emojis.map(
@@ -22,7 +22,7 @@ export class BotbotMessageEvent {
   @On({ event: 'messageReactionAdd' })
   @Guard(UserGuard.BotbotReaction)
   async cleanEmojisInReaction([reaction]: ArgsOf<'messageReactionAdd'>) {
-    if (EmojiService.customEmojis[(<ReactionEmoji>(<any>reaction)._emoji).name!.remove(':')] != null) {
+    if (EmojiService.emojisRepo[(<ReactionEmoji>(<any>reaction)._emoji).name!.remove(':')] != null) {
       await EmojiService.removeFromGuild(reaction.message.guild!, (<ReactionEmoji>(<any>reaction)._emoji).id!);
     }
   }

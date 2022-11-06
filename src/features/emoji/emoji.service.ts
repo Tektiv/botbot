@@ -2,15 +2,14 @@ import { ObjectUtils } from '@utils/object.util';
 import { Request } from '@utils/request.util';
 import { Config } from 'assets/config/config.service';
 import { Guild, GuildEmoji } from 'discord.js';
-import { bot } from 'main';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export class EmojiService {
-  static customEmojis: Record<string, string> = {};
+  static emojisRepo: Record<string, string> = {};
 
   static async init() {
-    this.customEmojis = await firstValueFrom(
+    this.emojisRepo = await firstValueFrom(
       Request.get(`${Config.get('CUSTOM_EMOJI.URL', '')}/latest?meta=false`, {
         headers: {
           'X-Master-Key': Config.get('CUSTOM_EMOJI.KEY', ''),
@@ -24,11 +23,11 @@ export class EmojiService {
   }
 
   static async push(name: string, url: string): Promise<void> {
-    this.customEmojis = await firstValueFrom(
+    this.emojisRepo = await firstValueFrom(
       Request.put(
         `${Config.get('CUSTOM_EMOJI.URL', '')}`,
         {
-          ...this.customEmojis,
+          ...this.emojisRepo,
           [name.remove(':')]: url,
         },
         {
@@ -48,7 +47,7 @@ export class EmojiService {
     await Promise.all(
       text
         .split(' ')
-        .filter((word) => this.customEmojis[word.remove(':')] != null)
+        .filter((word) => this.emojisRepo[word.remove(':')] != null)
         .removeDuplicates()
         .map(async (name) => {
           if (!emojis[name]) {
@@ -64,21 +63,32 @@ export class EmojiService {
     return new Promise(async (resolve) => {
       const emoji = await guild.emojis.create({
         name: name.remove(':'),
-        attachment: this.customEmojis[name.remove(':')],
+        attachment: this.emojisRepo[name.remove(':')],
       });
       resolve(emoji.toString());
     });
   }
 
-  static removeFromGuild(guild: Guild, name: string): Promise<GuildEmoji> | undefined {
-    return guild.emojis.resolve(name)?.delete();
+  static removeFromGuild(guild: Guild, id: string): Promise<GuildEmoji> | undefined {
+    return guild.emojis.resolve(id)?.delete();
+  }
+
+  static async removeByName(guild: Guild, name: string) {
+    await guild.fetch();
+
+    const emoji = guild.emojis.cache.find((emoji) => emoji.name === name);
+    if (emoji) {
+      return this.removeFromGuild(guild, emoji?.id!);
+    }
   }
 }
 
 export async function Emoji(name: string, guild: Guild): Promise<string> {
+  await guild.fetch();
+
   return (
-    bot.emojis.cache.find((emoji) => emoji.name === name.remove(':')) ||
-    (EmojiService.customEmojis[name.remove(':')] != null ? await EmojiService.replaceEmojis(name, guild) : name)
+    guild.emojis.cache.find((emoji) => emoji.name === name.remove(':')) ||
+    (EmojiService.emojisRepo[name.remove(':')] != null ? await EmojiService.replaceEmojis(name, guild) : name)
   ).toString();
 }
 

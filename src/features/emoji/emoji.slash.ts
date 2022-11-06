@@ -7,18 +7,18 @@ export class EmojiSlash {
   @Slash({ description: 'Displays a custom emoji' })
   async emoji(
     @SlashOption({
+      description: 'Emoji name',
+      name: 'name',
+      required: true,
+      type: ApplicationCommandOptionType.String,
       autocomplete: function (interaction: AutocompleteInteraction) {
         interaction.respond(
-          Object.keys(EmojiService.customEmojis)
+          Object.keys(EmojiService.emojisRepo)
             .filter((emoji) => new RegExp(interaction.options.getFocused(true).value).test(emoji))
             .slice(0, 24)
             .map((emoji) => ({ name: emoji, value: `:${emoji}:` })),
         );
       },
-      description: 'Emoji name',
-      name: 'name',
-      required: true,
-      type: ApplicationCommandOptionType.String,
     })
     emoji: string,
     interaction: CommandInteraction,
