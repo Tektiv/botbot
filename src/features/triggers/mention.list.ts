@@ -9,11 +9,21 @@ export const MessageMentionList: MessageTrigger[] = [
   {
     regexp: /t('|u )es/,
     action: MessageTriggerAction.CHANNEL_MESSAGE,
-    args: ['va à la merde', 'ça me fait plaisir ce que tu me dis là', "j'allais te dire la même chose", 'merci'],
+    args: ['va à la merde', 'ça me fait plaisir ce que tu me dis là', 'merci'],
   },
   {
     regexp: /\?/,
     action: MessageTriggerAction.CHANNEL_MESSAGE,
-    args: ['oui', 'non', "t'aimerais bien savoir hein ?"],
+    args: ['ouais', 'neh', "t'aimerais bien savoir hein ?", 'oé', "j'ai pas les mots"],
+  },
+  {
+    regexp: /(salut|coucou|bonjour)/,
+    action: MessageTriggerAction.REACT,
+    args: ['ralph'],
+  },
+  {
+    regexp: /^merci/,
+    action: MessageTriggerAction.REACT,
+    args: ['nod'],
   },
 ];

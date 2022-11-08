@@ -11,7 +11,6 @@ import {
   MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
-import { EmojiService } from 'features/emoji/emoji.service';
 import { RPGFishService } from './fish.rpg.service';
 
 @Discord()
@@ -30,35 +29,6 @@ export class RPGFishSlash {
     interaction.reply({
       embeds: [embed],
     });
-  }
-
-  @Slash({ description: "What's in my bag?" })
-  async fishes(interaction: CommandInteraction) {
-    const fishes = await RPGFishService.fishesFromUser(interaction.user);
-
-    if (fishes.length > 0) {
-      const embeds = fishes.slice(0, 9).map((fish) =>
-        new EmbedBuilder()
-          .setTitle(`${fish.quantity}x ${(<string>fish.name).capitalize()}`)
-          .setThumbnail(fish?.icon!)
-          .setDescription(`${fish?.raritySymbol} ${fish?.rarity}`),
-      );
-
-      interaction.reply({
-        embeds,
-        ephemeral: true,
-      });
-    } else {
-      const embed = new EmbedBuilder()
-        .setTitle('There is no fish in your bag...')
-        .setThumbnail(EmojiService.emojisRepo.psyko)
-        .setDescription('Start fishing using `/fish`!');
-
-      interaction.reply({
-        embeds: [embed],
-        ephemeral: true,
-      });
-    }
   }
 
   @Slash({ description: 'Trade one of your fish with someone else' })
