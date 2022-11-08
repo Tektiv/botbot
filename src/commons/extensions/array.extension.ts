@@ -4,11 +4,21 @@ export {};
 
 declare global {
   interface Array<T> {
+    get first(): T;
+    get last(): T;
     pickOne(): T;
     pickOneUsingWeight(wieghts: number[]): T;
     removeDuplicates(): T[];
   }
 }
+
+(Array.prototype as any).__defineGetter__('first', function <T>(this: T[]) {
+  return this[0];
+});
+
+(Array.prototype as any).__defineGetter__('last', function <T>(this: T[]) {
+  return this[this.length - 1];
+});
 
 Array.prototype.pickOne = function <T>(this: T[]): T {
   return this[MathUtils.random(0, this.length - 1)];

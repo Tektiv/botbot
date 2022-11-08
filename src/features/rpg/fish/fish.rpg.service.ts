@@ -37,8 +37,16 @@ export class RPGFishService {
     return this.fishRepo.find((fish) => fish.name === name);
   }
 
+  static getAvailableFish(): RPGFish {
+    const fishes = this.fishRepo.filter((fish) => {
+      const now = new Date();
+      return fish.availability.months.includes(now.getMonth() + 1) && fish.availability.hours.includes(now.getHours());
+    });
+    return fishes.pickOneUsingWeight(fishes.map((fish) => fish.weight));
+  }
+
   static async fish(user: User): Promise<RPGFish> {
-    const fish = this.fishRepo.pickOneUsingWeight(this.fishRepo.map((fish) => fish.weight));
+    const fish = this.getAvailableFish();
     await this.addFishToUser(user, fish);
     return fish;
   }
@@ -71,6 +79,15 @@ export class RPGFishService {
       fish.quantity = fishEntry.get('quantity');
       return fish;
     });
+  }
+
+  static async countFish(fish: RPGFish): Promise<number> {
+    const fishes = await this.fishInventoryDB.findAll({
+      where: { fish: fish.name },
+      attributes: ['quantity'],
+    });
+
+    return fishes.reduce((sum, fishEntry) => sum + <number>fishEntry.get('quantity'), 0);
   }
 
   static async addFishToUser(user: User, fish: RPGFish) {
