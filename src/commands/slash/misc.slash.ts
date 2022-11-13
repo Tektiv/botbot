@@ -4,11 +4,6 @@ import { Discord, Slash, SlashOption } from 'discordx';
 
 @Discord()
 export class MiscSlash {
-  @Slash({ description: 'ping' })
-  ping(interaction: CommandInteraction) {
-    interaction.reply('pong!');
-  }
-
   @Slash({ description: 'OH yOU WAnNA mOcK SOmeThiNg?' })
   mock(
     @SlashOption({
