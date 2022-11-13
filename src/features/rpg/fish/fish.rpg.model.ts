@@ -36,33 +36,20 @@ export class RPGFish {
     };
   }
 
-  get weight(): number {
-    switch (this.rarity) {
-      case RPGFishRarity.ULTRA_RARE:
-        return 1;
-      case RPGFishRarity.RARE:
-        return 5;
-      case RPGFishRarity.UNCOMMON:
-        return 20;
-      case RPGFishRarity.COMMON:
-      default:
-        return 100;
-    }
-  }
-
-  get raritySymbol(): string {
-    switch (this.rarity) {
-      case RPGFishRarity.ULTRA_RARE:
-        return '🟠';
-      case RPGFishRarity.RARE:
-        return '🟡';
-      case RPGFishRarity.UNCOMMON:
-        return '🟢';
-      case RPGFishRarity.COMMON:
-      default:
-        return '⚪️';
-    }
-  }
+  rarityTo = {
+    weight: (rarity = this.rarity): number => {
+      const index = Object.values(RPGFishRarity).indexOf(rarity);
+      return [100, 20, 5, 1][index] ?? 100;
+    },
+    symbol: (rarity = this.rarity): string => {
+      const index = Object.values(RPGFishRarity).indexOf(rarity);
+      return ['⚪️', '🟢', '🟡', '🟠'][index] ?? '⚪️';
+    },
+    xp: (rarity = this.rarity): number => {
+      const index = Object.values(RPGFishRarity).indexOf(rarity);
+      return [10, 50, 200, 1000][index] ?? 10;
+    },
+  };
 
   get monthAvailability(): string {
     const formatter = new Intl.DateTimeFormat('en', { month: 'long' });

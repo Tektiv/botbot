@@ -43,7 +43,7 @@ export class RPGFishService {
             fish.availability.months.includes(now.getMonth() + 1) && fish.availability.hours.includes(now.getHours())
           );
         });
-        return fishes.pickOneUsingWeight(fishes.map((fish) => fish.weight));
+        return fishes.pickOneUsingWeight(fishes.map((fish) => fish.rarityTo.weight()));
       },
     },
   };
@@ -70,7 +70,7 @@ export class RPGFishService {
 
   static get = {
     fishesFromUser: async (user: User): Promise<(RPGFish & { quantity: number })[]> => {
-      const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user.id));
+      const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user));
       const fishes = await RPGDatabase.fishInventory.findAll({
         where: { userInventoryId, quantity: { [Op.gt]: 0 } },
         attributes: ['quantity', ['fish', 'name']],
@@ -98,7 +98,7 @@ export class RPGFishService {
   static patch = {
     userFish: {
       add: async (user: User, fish: RPGFish) => {
-        const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user.id));
+        const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user));
         let fishEntry = await RPGDatabase.fishInventory.findOne({
           where: { userInventoryId, fish: fish.name },
         });
@@ -111,7 +111,7 @@ export class RPGFishService {
         await fishEntry.increment('quantity');
       },
       remove: async (user: User, fish: RPGFish) => {
-        const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user.id));
+        const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user));
         const fishEntry = await RPGDatabase.fishInventory.findOne({
           where: { userInventoryId, fish: fish.name },
         });

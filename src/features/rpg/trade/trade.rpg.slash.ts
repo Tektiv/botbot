@@ -27,7 +27,7 @@ export class TradeSlash {
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
             .slice(0, 24)
             .map((fish) => ({
-              name: `${fish.raritySymbol} ${fish.name.capitalize()} - x${fish.quantity}`,
+              name: `${fish.rarityTo.symbol()} ${fish.name.capitalize()} - x${fish.quantity}`,
               value: fish.name,
             })),
         );
@@ -62,7 +62,7 @@ export class TradeSlash {
           (await RPGFishService.get.fishesFromUser(trader))
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
             .slice(0, 24)
-            .map((fish) => ({ name: `${fish.raritySymbol} ${fish.name.capitalize()}`, value: fish.name })),
+            .map((fish) => ({ name: `${fish.rarityTo.symbol()} ${fish.name.capitalize()}`, value: fish.name })),
         );
       },
     })
@@ -84,12 +84,12 @@ export class TradeSlash {
       .setDescription(`${trader}, ${interaction.user.username} wants to trade with you`)
       .addFields({
         name: 'You will trade',
-        value: `${traderFish?.raritySymbol} ${traderFish?.name.capitalize()}`,
+        value: `${traderFish?.rarityTo.symbol()} ${traderFish?.name.capitalize()}`,
         inline: true,
       })
       .addFields({
         name: 'They will trade',
-        value: `${fish?.raritySymbol} ${fish?.name.capitalize()}`,
+        value: `${fish?.rarityTo.symbol()} ${fish?.name.capitalize()}`,
         inline: true,
       })
       .setTimestamp();

@@ -41,7 +41,7 @@ export class EncyclopediaSlash {
     const numbers = await RPGFishService.count.fishOccurences(fish);
     const embed = new EmbedBuilder()
       .setTitle(`${fish.name.capitalize()}`)
-      .addFields({ name: 'Rarity', value: `${fish.raritySymbol} ${fish.rarity}` })
+      .addFields({ name: 'Rarity', value: `${fish.rarityTo.symbol()} ${fish.rarity}` })
       .addFields({ name: '# fished', value: numbers.toString() })
       .addFields({ name: 'Months', value: fish.monthAvailability, inline: true })
       .addFields({ name: '\u200b', value: '\u200b', inline: true })
