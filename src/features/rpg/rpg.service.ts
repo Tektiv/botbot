@@ -1,38 +1,31 @@
-import { DATABASE, PRIMARY_KEY, SQLite } from 'resources/sqlite/sqlite.service';
-import { STRING } from 'sequelize';
 import { RPGFishService } from './fish/fish.rpg.service';
-
-type InventoryModel = {
-  user: string;
-};
+import { RPGInventoryService } from './inventory/inventory.service';
+import { RPGDatabase } from './rpg.database';
 
 export class RPGService {
-  static inventoryDB: DATABASE<InventoryModel>;
-
   static async init() {
-    this.inventoryDB = SQLite.sequelize.define('user_inventory', {
-      id: PRIMARY_KEY,
-      user: STRING,
-    });
-    this.inventoryDB.sync();
-
+    await this._init.inventory();
     await this._init.fish();
   }
 
-  static _init = {
+  private static _init = {
+    inventory: async () => {
+      await RPGInventoryService.init();
+      await RPGDatabase.inventory.sync();
+    },
     fish: async () => {
       await RPGFishService.init();
-      this.inventoryDB.hasMany(RPGFishService.fishInventoryDB);
-      RPGFishService.fishInventoryDB.belongsTo(this.inventoryDB);
-      await RPGFishService.fishInventoryDB.sync();
+      RPGDatabase.inventory.hasMany(RPGDatabase.fishInventory);
+      RPGDatabase.fishInventory.belongsTo(RPGDatabase.inventory);
+      await RPGDatabase.fishInventory.sync();
     },
   };
 
-  static inventory = {
-    getByUser: async (user: string) => {
-      let inventory = await this.inventoryDB.findOne({ where: { user } });
+  static getUser = {
+    inventory: async (user: string) => {
+      let inventory = await RPGDatabase.inventory.findOne({ where: { user } });
       if (!inventory) {
-        inventory = await this.inventoryDB.create({ user });
+        inventory = await RPGDatabase.inventory.create({ user });
       }
       return inventory;
     },

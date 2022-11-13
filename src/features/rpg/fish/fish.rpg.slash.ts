@@ -14,7 +14,7 @@ import { RPGFishService } from './fish.rpg.service';
 export class RPGFishSlash {
   @Slash({ description: "Hope you'll catch something nice!" })
   async fish(interaction: CommandInteraction) {
-    const fish = await RPGFishService.fish(interaction.user);
+    const fish = await RPGFishService.actions.fish(interaction.user);
 
     const embed = new EmbedBuilder()
       .setColor(0x0099ff)

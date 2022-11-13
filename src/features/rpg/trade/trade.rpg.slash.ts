@@ -23,7 +23,7 @@ export class TradeSlash {
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
         interaction.respond(
-          (await RPGFishService.fishesFromUser(interaction.user))
+          (await RPGFishService.get.fishesFromUser(interaction.user))
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
             .slice(0, 24)
             .map((fish) => ({
@@ -59,7 +59,7 @@ export class TradeSlash {
         }
 
         interaction.respond(
-          (await RPGFishService.fishesFromUser(trader))
+          (await RPGFishService.get.fishesFromUser(trader))
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
             .slice(0, 24)
             .map((fish) => ({ name: `${fish.raritySymbol} ${fish.name.capitalize()}`, value: fish.name })),
@@ -69,8 +69,8 @@ export class TradeSlash {
     traderFishName: string,
     interaction: CommandInteraction,
   ) {
-    const fish = RPGFishService.fishFromName(fishName);
-    const traderFish = RPGFishService.fishFromName(traderFishName);
+    const fish = RPGFishService.fish.get.fromName(fishName);
+    const traderFish = RPGFishService.fish.get.fromName(traderFishName);
 
     if (fish == null || traderFish == null) {
       interaction.reply({
@@ -127,7 +127,7 @@ export class TradeSlash {
         }
 
         if (
-          await RPGFishService.tradeFish(
+          await RPGFishService.actions.trade(
             { user: interaction.user, fish: fish! },
             { user: trader.user, fish: traderFish! },
           )
