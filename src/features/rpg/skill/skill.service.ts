@@ -3,7 +3,7 @@ import { PRIMARY_KEY, SQLite } from 'resources/sqlite/sqlite.service';
 import { NUMBER, STRING } from 'sequelize';
 import { RPGDatabase } from '../rpg.database';
 import { RPGService } from '../rpg.service';
-import { Skills } from './skill.model';
+import { Skill } from './skill.model';
 
 export class RPGSkillService {
   static async init() {
@@ -30,7 +30,7 @@ export class RPGSkillService {
   };
 
   static patch = {
-    addXp: async (user: User, skill: Skills, value: number) => {
+    addXp: async (user: User, skill: Skill, value: number) => {
       const skillEntry = await RPGService.getUser.skill(user, skill);
       return await skillEntry.update({ xp: <number>skillEntry.get('xp') + value });
     },

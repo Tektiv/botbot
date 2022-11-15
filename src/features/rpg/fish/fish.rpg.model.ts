@@ -37,10 +37,6 @@ export class RPGFish {
   }
 
   rarityTo = {
-    weight: (rarity = this.rarity): number => {
-      const index = Object.values(RPGFishRarity).indexOf(rarity);
-      return [100, 20, 5, 1][index] ?? 100;
-    },
     symbol: (rarity = this.rarity): string => {
       const index = Object.values(RPGFishRarity).indexOf(rarity);
       return ['⚪️', '🟢', '🟡', '🟠'][index] ?? '⚪️';
@@ -116,4 +112,22 @@ export class RPGFish {
       return agg;
     }, []);
   }
+}
+
+export class RPGFishes extends Array<RPGFish> {
+  constructor(...items: RPGFish[]) {
+    super();
+    this.push(...items);
+  }
+
+  findByName = (name: string) => this.find((fish) => fish.name === name);
+
+  available = () => <RPGFishes>this.filter((fish) => {
+      const now = new Date();
+      return fish.availability.months.includes(now.getMonth() + 1) && fish.availability.hours.includes(now.getHours());
+    });
+
+  of = {
+    rarity: (rarity: RPGFishRarity) => <RPGFishes>this.filter((fish) => fish.rarity === rarity),
+  };
 }

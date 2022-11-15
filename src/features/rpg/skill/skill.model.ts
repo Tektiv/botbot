@@ -1,9 +1,9 @@
-export enum Skills {
+export enum Skill {
   FISHING = 'fish',
 }
 
-export const SkillsData: { [key in Skills]: { [key in 'label' | 'emoji']: string } } = {
-  [Skills.FISHING]: {
+export const SkillsData: { [key in Skill]: { [key in 'label' | 'emoji']: string } } = {
+  [Skill.FISHING]: {
     label: 'Fishing',
     emoji: '🎣',
   },
@@ -11,6 +11,6 @@ export const SkillsData: { [key in Skills]: { [key in 'label' | 'emoji']: string
 
 export type SkillModel = {
   user: string;
-  skill: Skills;
+  skill: Skill;
   xp: number;
 };

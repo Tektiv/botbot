@@ -16,7 +16,7 @@ export class EncyclopediaSlash {
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
         interaction.respond(
-          RPGFishService.fishRepo
+          RPGFishService.fishes
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
             .slice(0, 24)
             .map((fish) => ({
@@ -29,7 +29,7 @@ export class EncyclopediaSlash {
     fishName: string,
     interaction: CommandInteraction,
   ) {
-    const fish = RPGFishService.fishRepo.find((fish) => fish.name === fishName);
+    const fish = RPGFishService.fishes.find((fish) => fish.name === fishName);
     if (fish == null) {
       interaction.reply({
         content: `Fish "${fishName}" not found...`,

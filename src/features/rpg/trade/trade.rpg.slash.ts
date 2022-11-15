@@ -69,8 +69,8 @@ export class TradeSlash {
     traderFishName: string,
     interaction: CommandInteraction,
   ) {
-    const fish = RPGFishService.fish.get.fromName(fishName);
-    const traderFish = RPGFishService.fish.get.fromName(traderFishName);
+    const fish = RPGFishService.fishes.findByName(fishName);
+    const traderFish = RPGFishService.fishes.findByName(traderFishName);
 
     if (fish == null || traderFish == null) {
       interaction.reply({

@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import { RPGFishService } from './fish/fish.rpg.service';
 import { RPGInventoryService } from './inventory/inventory.service';
 import { RPGDatabase } from './rpg.database';
-import { Skills } from './skill/skill.model';
+import { Skill } from './skill/skill.model';
 import { RPGSkillService } from './skill/skill.service';
 
 export class RPGService {
@@ -41,7 +41,7 @@ export class RPGService {
       return inventory;
     },
 
-    skill: async (user: User, skill: Skills) => {
+    skill: async (user: User, skill: Skill) => {
       let skillEntry = await RPGDatabase.skills.findOne({ where: { user: user.id, skill } });
       if (!skillEntry) {
         skillEntry = await RPGDatabase.skills.create({ user: user.id, skill });

@@ -1,7 +1,8 @@
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
+import { RPGInteraction } from '../rpg.interaction';
 import { RPGService } from '../rpg.service';
-import { Skills, SkillsData } from './skill.model';
+import { Skill, SkillsData } from './skill.model';
 import { RPGSkillService } from './skill.service';
 
 @Discord()
@@ -26,7 +27,7 @@ export class SkillSlash {
 
     const skillsEmbed = new EmbedBuilder().setDescription('✨ Skills progression');
     skills.forEach((skillEntry) => {
-      const skill = <Skills>skillEntry.get('skill');
+      const skill = <Skill>skillEntry.get('skill');
       const xp = <number>skillEntry.get('xp');
       const skillData = SkillsData[skill];
 

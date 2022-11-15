@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { NUMBER, Op, STRING, UUID } from 'sequelize';
 import { RPGDatabase } from '../rpg.database';
 import { RPGService } from '../rpg.service';
-import { RPGFish } from './fish.rpg.model';
+import { RPGFish, RPGFishes, RPGFishRarity } from './fish.rpg.model';
 
 export type InventoryFishModel = {
   userInventoryId: string;
@@ -14,15 +14,15 @@ export type InventoryFishModel = {
 };
 
 export class RPGFishService {
-  static fishRepo: RPGFish[] = [];
+  static fishes: RPGFishes = new RPGFishes();
 
   static async init() {
     const fishesJSON = await firstValueFrom(
       Request.get('https://raw.githubusercontent.com/alexislours/ACNHAPI/master/fish.json'),
     );
 
-    this.fishRepo = Object.entries(JSON.parse(fishesJSON)).map(
-      ([name, data]: [string, any]) => new RPGFish(name, data),
+    this.fishes = new RPGFishes(
+      ...Object.entries(JSON.parse(fishesJSON)).map(([name, data]: [string, any]) => new RPGFish(name, data)),
     );
 
     RPGDatabase.fishInventory = SQLite.sequelize.define('inventory_fish', {
@@ -33,24 +33,12 @@ export class RPGFishService {
     });
   }
 
-  static fish = {
-    get: {
-      fromName: (name: string): RPGFish | undefined => this.fishRepo.find((fish) => fish.name === name),
-      randomAvailableFish: (): RPGFish => {
-        const fishes = this.fishRepo.filter((fish) => {
-          const now = new Date();
-          return (
-            fish.availability.months.includes(now.getMonth() + 1) && fish.availability.hours.includes(now.getHours())
-          );
-        });
-        return fishes.pickOneUsingWeight(fishes.map((fish) => fish.rarityTo.weight()));
-      },
-    },
-  };
-
   static actions = {
     fish: async (user: User): Promise<RPGFish> => {
-      const fish = this.fish.get.randomAvailableFish();
+      const fish = this.fishes
+        .available()
+        .of.rarity(Object.values(RPGFishRarity).pickOneUsingWeight([100, 20, 5, 1]))
+        .pickOne();
       await this.patch.userFish.add(user, fish);
       return fish;
     },
@@ -77,7 +65,7 @@ export class RPGFishService {
       });
 
       return fishes.map((fishEntry) => {
-        const fish: any = this.fishRepo.find((fish) => fish.name === fishEntry.get('name'));
+        const fish: any = this.fishes.find((fish) => fish.name === fishEntry.get('name'));
         fish.quantity = fishEntry.get('quantity');
         return fish;
       });

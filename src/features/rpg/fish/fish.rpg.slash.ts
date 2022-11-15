@@ -8,9 +8,8 @@ import {
   MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { RPGService } from '../rpg.service';
-import { Skills } from '../skill/skill.model';
-import { RPGSkillService } from '../skill/skill.service';
+import { RPGInteraction } from '../rpg.interaction';
+import { Skill } from '../skill/skill.model';
 import { RPGFishService } from './fish.rpg.service';
 
 @Discord()
@@ -36,20 +35,7 @@ export class RPGFishSlash {
       // ephemeral: true,
     });
 
-    const fishingLevel = {
-      current: RPGSkillService.utils.xpToLevel(
-        <number>(await RPGService.getUser.skill(interaction.user, Skills.FISHING)).get('xp'),
-      ),
-      new: RPGSkillService.utils.xpToLevel(
-        <number>(await RPGSkillService.patch.addXp(interaction.user, Skills.FISHING, fish.rarityTo.xp())).get('xp'),
-      ),
-    };
-    if (fishingLevel.new > fishingLevel.current) {
-      const levelUpEmbed = new EmbedBuilder()
-        .setAuthor({ name: 'Level up!', iconURL: 'https://i.imgur.com/AkPIGBW.png' })
-        .setDescription(`Your 🎣 **Fishing** level is now **${fishingLevel.new}**!`);
-      interaction.followUp({ embeds: [levelUpEmbed], ephemeral: true });
-    }
+    await RPGInteraction.checkForLevelUp(interaction, Skill.FISHING, fish.rarityTo.xp());
 
     // reply.createMessageComponentCollector().on('collect', (click: ButtonInteraction) => {
     //   const sharedRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
