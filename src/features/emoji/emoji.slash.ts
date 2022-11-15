@@ -45,6 +45,10 @@ export class EmojiSlash {
     interaction: CommandInteraction,
   ) {
     await EmojiService.push(name, url);
-    interaction.reply({ content: await EmojiService.replaceEmojis(`:${name}:`, interaction.guild!), ephemeral: true });
+    await interaction.reply({
+      content: await EmojiService.replaceEmojis(`:${name}:`, interaction.guild!),
+      ephemeral: true,
+    });
+    await EmojiService.removeByName(interaction.guild!, name);
   }
 }

@@ -24,7 +24,8 @@ export class RPGSkillService {
       if (level === 100) {
         return 10;
       }
-      return (xp - this.utils.levelToXp(level)) / this.utils.levelToXp(level + 1);
+      const xpLimit = { low: this.utils.levelToXp(level), high: this.utils.levelToXp(level + 1) };
+      return (xp - xpLimit.low) / (xpLimit.high - xpLimit.low);
     },
   };
 
