@@ -35,10 +35,7 @@ export class RPGFishService {
 
   static actions = {
     fish: async (user: User): Promise<RPGFish> => {
-      const fish = this.fishes
-        .available()
-        .of.rarity(Object.values(RPGFishRarity).pickOneUsingWeight([100, 20, 5, 1]))
-        .pickOne();
+      const fish = (await this.fishes.available().weighRarity(user)).pickOne();
       await this.patch.userFish.add(user, fish);
       return fish;
     },

@@ -1,3 +1,8 @@
+import { User } from 'discord.js';
+import { RPGService } from '../rpg.service';
+import { Skill } from '../skill/skill.model';
+import { RPGSkillService } from '../skill/skill.service';
+
 export enum RPGFishRarity {
   COMMON = 'Common',
   UNCOMMON = 'Uncommon',
@@ -122,12 +127,25 @@ export class RPGFishes extends Array<RPGFish> {
 
   findByName = (name: string) => this.find((fish) => fish.name === name);
 
+  of = {
+    rarity: (rarity: RPGFishRarity) => <RPGFishes>this.filter((fish) => fish.rarity === rarity),
+  };
+
   available = () => <RPGFishes>this.filter((fish) => {
       const now = new Date();
       return fish.availability.months.includes(now.getMonth() + 1) && fish.availability.hours.includes(now.getHours());
     });
 
-  of = {
-    rarity: (rarity: RPGFishRarity) => <RPGFishes>this.filter((fish) => fish.rarity === rarity),
+  weighRarity = async (user: User) => {
+    const weights = [100, 20, 5, 1];
+    const maxLevelWeights = [100, 50, 20, 5];
+    const fishingLevel = RPGSkillService.utils.xpToLevel(
+      <number>(await RPGService.getUser.skill(user, Skill.FISHING)).get('xp'),
+    );
+
+    const rarity = Object.values(RPGFishRarity).pickOneUsingWeight(
+      weights.map((weight, index) => weight + (maxLevelWeights[index] - weight) * (fishingLevel / 100)),
+    );
+    return <RPGFishes>this.of.rarity(rarity);
   };
 }
