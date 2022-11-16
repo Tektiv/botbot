@@ -4,10 +4,34 @@ export {};
 
 declare global {
   interface Array<T> {
+    /**
+     * Returns the first element of an array.
+     * If it is empty, returns undefined.
+     */
     get first(): T;
+
+    /**
+     * Returns the last element of an array.
+     * If it is empty, returns undefined.
+     */
     get last(): T;
+
+    /**
+     * Picks a random element of an array.
+     * If it is empty, returns undefined.
+     */
     pickOne(): T;
-    pickOneUsingWeight(wieghts: number[]): T;
+
+    /**
+     * Picks a random element of an array.
+     * @param weights An array of weights for the probabilities of each occurrence.
+     */
+    pickOneUsingWeight(weights: number[]): T;
+
+    /**
+     * Removes duplicate elements by keeping only its first occurrence.
+     * @example [1, 2, 1, 3, 1, 1, 4] => [1, 2, 3, 4]
+     */
     removeDuplicates(): T[];
   }
 }
