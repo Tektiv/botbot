@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "build/main.js",
   "scripts": {
+    "postinstall": "husky install",
     "build": "tsc",
     "build:changelog": "npx @discordx/changelog --root=src",
     "dev": "ts-node-esm src/main.ts",
@@ -27,6 +28,7 @@
     "@types/jest": "^29.2.3",
     "@types/needle": "^2.5.3",
     "@types/node": "^18.11.7",
+    "husky": "^8.0.2",
     "jest": "^29.3.1",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",

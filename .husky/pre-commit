@@ -1,0 +1,28 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo '👨‍🔬 Commit stats'
+echo " $(git diff --shortstat --cached)"
+staged_files=$(git diff --name-only --cached --diff-filter=d)
+echo ''
+
+echo '🧹 Prettifying files...'
+prettify_regexp="^src/.*/.*\.(ts|js)$"
+prettify_str=""
+for file in $staged_files; do
+    if [[ $file =~ $prettify_regexp ]]; then
+        prettify_str="${prettify_str} ${file}"
+    fi
+done
+if [[ -n "$prettify_str" ]]; then
+    npx prettier --config .prettierrc ${prettify_str} --write --loglevel warn
+    echo '  All files prettified!'
+    git add ${prettify_str}
+    echo '  Prettified files staged!'
+else
+    echo '  No files to prettify'
+fi
+echo ''
+
+echo '🧪 Testing'
+npx jest --silent

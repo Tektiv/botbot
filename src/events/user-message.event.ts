@@ -21,6 +21,4 @@ export class UserMessageEvent {
     const reactions = [`👁️ 🫦 👁️`, `👁️ 👄 👁️`, 'classe'];
     message.channel.send(reactions.pickOne());
   }
-
-  
 }
