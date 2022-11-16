@@ -22,7 +22,7 @@
       "@extensions/*": ["commons/extensions/*"]
     }
   },
-  "exclude": ["build", "node_modules"],
+  "exclude": ["build", "node_modules", "*.test.ts"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }
