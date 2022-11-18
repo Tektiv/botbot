@@ -28,4 +28,24 @@ describe('ObjectUtils', () => {
       expect(ObjectUtils.fromEntries(pairs)).toEqual(expected);
     });
   });
+
+  describe('get', () => {
+    it('should get a nested property of an object', () => {
+      const obj = {
+        deep: {
+          deep: {
+            deep: {
+              value: 'Hello world!',
+            },
+          },
+        },
+      };
+
+      expect(ObjectUtils.get(obj)).toBe(obj);
+      expect(ObjectUtils.get(obj, 'deep')).toBe(obj.deep);
+      expect(ObjectUtils.get(obj, 'deep.deep')).toBe(obj.deep.deep);
+      expect(ObjectUtils.get(obj, 'deep.deep.deep')).toBe(obj.deep.deep.deep);
+      expect(ObjectUtils.get(obj, 'deep.deep.deep.value')).toBe(obj.deep.deep.deep.value);
+    });
+  });
 });
