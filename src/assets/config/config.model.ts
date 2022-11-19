@@ -1,4 +1,4 @@
-export interface IConfig {
+export type IConfig = {
   BOT_TOKEN: string;
   CUSTOM_EMOJI: {
     URL: string;
@@ -9,4 +9,4 @@ export interface IConfig {
     PASSWORD: string;
     HOST: string;
   };
-}
+};

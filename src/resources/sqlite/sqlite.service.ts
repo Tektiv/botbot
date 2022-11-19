@@ -1,4 +1,3 @@
-import { IConfig } from 'assets/config/config.model';
 import { Config } from 'assets/config/config.service';
 import { Model, ModelStatic, Sequelize, UUID, UUIDV4 } from 'sequelize';
 
@@ -11,7 +10,7 @@ export class SQLite {
   static sequelize: Sequelize;
 
   static init() {
-    const sqliteConfig = Config.get<IConfig['SQLITE']>('SQLITE');
+    const sqliteConfig = Config.get('SQLITE');
     SQLite.sequelize = new Sequelize('botbot_db', sqliteConfig.USER, sqliteConfig.PASSWORD, {
       host: sqliteConfig.HOST ?? 'localhost',
       dialect: 'sqlite',
