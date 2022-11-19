@@ -1,6 +1,6 @@
-import { Utils } from '@utils/util';
+import { ObjectUtils } from '@utils/object.util';
 import { IConfig } from 'assets/config/config.model';
-import { RecursiveKeyOf } from 'commons/types';
+import { NestedPaths, TypeFromPath } from 'commons/types/nested-path';
 import { readFileSync } from 'fs';
 
 export class Config {
@@ -10,7 +10,10 @@ export class Config {
     this.config = JSON.parse(readFileSync('src/assets/config/config.json', 'utf8'));
   }
 
-  static get<T>(path: RecursiveKeyOf<IConfig>, defaultValue?: T): T {
-    return Utils.getValue(Config.config, path, defaultValue);
+  static get<P extends NestedPaths<IConfig>>(
+    path: P,
+    defaultValue?: TypeFromPath<IConfig, P>,
+  ): TypeFromPath<IConfig, P> {
+    return ObjectUtils.get(this.config, path) ?? defaultValue;
   }
 }

@@ -17,18 +17,14 @@ export class ObjectUtils {
    * Gets the value of a nested property of an object based on its path.
    * @param obj
    * @param path
-   * @param defaultValue
    */
-  static get<K extends keyof any, V, Path extends NestedPaths<Record<K, V>>>(
-    obj: Record<K, V>,
+  static get<K extends keyof any, V, O extends Record<K, V>, Path extends NestedPaths<O>>(
+    obj: O,
     path?: Path,
-    defaultValue: any = undefined,
-  ): TypeFromPath<Record<K, V>, Path> {
+  ): TypeFromPath<O, Path> {
     if (!path) {
-      return (obj as any) || defaultValue;
+      return obj as any;
     }
-    return path
-      .split('.')
-      .reduce((subObject: any, subKey: any) => (subObject ? subObject[subKey] : defaultValue), obj) as any;
+    return path.split('.').reduce((subObject: any, subKey: any) => subObject[subKey] ?? undefined, obj);
   }
 }
