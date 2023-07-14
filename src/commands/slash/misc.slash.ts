@@ -1,11 +1,12 @@
 import { MathUtils } from '@utils/math.util';
-import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js';
+import { Guilds } from 'commons/discord/guilds.discord';
+import { ApplicationCommandOptionType, Client, CommandInteraction } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 
 @Discord()
 export class MiscSlash {
   @Slash({ description: 'OH yOU WAnNA mOcK SOmeThiNg?' })
-  mock(
+  async mock(
     @SlashOption({
       description: 'mEssaGe TO mocK',
       name: 'message',
@@ -14,9 +15,15 @@ export class MiscSlash {
     })
     message: string,
     interaction: CommandInteraction,
+    client: Client,
   ) {
+    const emojiGuild = client.guilds.cache.get(Guilds.ketchup);
+    await emojiGuild?.fetch();
+
     interaction.reply(
-      message.map((letter) => (MathUtils.random(0, 1) === 0 ? letter.toUpperCase() : letter.toLowerCase())),
+      `${emojiGuild?.emojis.cache.find((emoji) => emoji.name === 'mock')} ${message.map((letter) =>
+        MathUtils.random(0, 1) === 0 ? letter.toUpperCase() : letter.toLowerCase(),
+      )}`,
     );
   }
 }
