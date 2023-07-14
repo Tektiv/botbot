@@ -25,6 +25,6 @@ export class ObjectUtils {
     if (!path) {
       return obj as any;
     }
-    return path.split('.').reduce((subObject: any, subKey: any) => subObject?.[subKey] ?? undefined, obj);
+    return path.split('.').reduce((subObject: any, subKey: any) => subObject[subKey] ?? undefined, obj);
   }
 }

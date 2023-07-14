@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, MessageActionRowComponentBuilder } from '@discordjs/builders';
+import { Embeds } from 'commons/discord/embeds.discord';
 import {
   ApplicationCommandOptionType,
   AutocompleteInteraction,
@@ -81,7 +82,7 @@ export class TradeSlash {
 
     const embed = new EmbedBuilder()
       .setTitle('🤝 Fish trading request')
-      .setDescription(`${trader}, ${interaction.user.username} wants to trade with you`)
+      .setDescription(`${trader}, **${interaction.user.username}** wants to trade with you`)
       .addFields({
         name: 'You will trade',
         value: `${traderFish?.rarityTo.symbol()} ${traderFish?.name.capitalize()}`,
@@ -91,8 +92,7 @@ export class TradeSlash {
         name: 'They will trade',
         value: `${fish?.rarityTo.symbol()} ${fish?.name.capitalize()}`,
         inline: true,
-      })
-      .setTimestamp();
+      });
 
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder().setLabel('Accept').setStyle(ButtonStyle.Success).setCustomId('fish_trade_accept'),
@@ -104,45 +104,44 @@ export class TradeSlash {
       components: [row],
     });
 
-    reply
-      .createMessageComponentCollector({
-        filter: <any>((click: ButtonInteraction) => click.user.id === trader.user.id),
-      })
-      .on('collect', async (click: ButtonInteraction) => {
-        const accepted = click.customId === 'fish_trade_accept';
-        const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-          new ButtonBuilder()
-            .setLabel(accepted ? 'Accepted' : 'Refused')
-            .setStyle(accepted ? ButtonStyle.Success : ButtonStyle.Secondary)
-            .setCustomId('fish_trade_concluded')
-            .setDisabled(true),
-        );
+    reply.createMessageComponentCollector().on('collect', async (click: ButtonInteraction) => {
+      if (click.user.id !== trader.user.id) {
+        click.reply(Embeds.warning('This interaction is not for you'));
+        return;
+      }
 
-        if (!accepted) {
-          click.message.edit({
-            components: [row],
-          });
-          click.deferUpdate();
-          return;
-        }
+      const accepted = click.customId === 'fish_trade_accept';
+      const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
+          .setLabel(accepted ? 'Accepted' : 'Refused')
+          .setStyle(accepted ? ButtonStyle.Success : ButtonStyle.Secondary)
+          .setCustomId('fish_trade_concluded')
+          .setDisabled(true),
+      );
 
-        if (
-          await RPGFishService.actions.trade(
-            { user: interaction.user, fish: fish! },
-            { user: trader.user, fish: traderFish! },
-          )
-        ) {
-          click.message.edit({
-            components: [row],
-          });
-          click.deferUpdate();
-          return;
-        }
-
-        click.reply({
-          content: 'Error while trading...',
-          ephemeral: true,
+      if (!accepted) {
+        click.message.edit({
+          components: [row],
         });
-      });
+        click.deferUpdate();
+        return;
+      }
+
+      if (
+        await RPGFishService.actions.trade(
+          { user: interaction.user, fish: fish! },
+          { user: trader.user, fish: traderFish! },
+        )
+      ) {
+        click.message.edit({
+          components: [row],
+        });
+        click.deferUpdate();
+        return;
+      }
+
+      click.message.edit({ ...Embeds.error('Error while trading'), components: [] });
+      click.deferUpdate();
+    });
   }
 }
