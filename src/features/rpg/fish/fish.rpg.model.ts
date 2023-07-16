@@ -14,7 +14,7 @@ export class RPGFish {
   name: string;
   catch: {
     phrase: string;
-    joke: string;
+    joke: string | undefined;
   };
   rarity: RPGFishRarity;
   price: number;
@@ -33,7 +33,7 @@ export class RPGFish {
     const match = (<string>data['catch-phrase']).match(new RegExp(`^(.*${this.name}(?:!|\.\.\.)) (.*)$`));
     this.catch = {
       phrase: match?.[1] ?? `I cautght a ${this.name}!`,
-      joke: match?.[2] ?? '-',
+      joke: match?.[2],
     };
     this.availability = {
       months: data.availability['month-array-northern'],
