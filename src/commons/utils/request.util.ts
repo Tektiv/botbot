@@ -1,6 +1,6 @@
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as needle from 'needle';
+import needle from 'needle';
 
 type RequestOptions = Partial<{
   headers: Record<string, string>;
