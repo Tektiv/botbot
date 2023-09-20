@@ -37,7 +37,7 @@ export const MessageTriggerList: MessageTrigger[] = [
     args: [orelsanQuete],
   },
   {
-    regexp: /j'ai faim/,
+    regexp: /j'ai faim/i,
     action: MessageTriggerAction.FUNCTION,
     args: [hungry],
   },
