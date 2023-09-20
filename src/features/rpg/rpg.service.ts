@@ -36,7 +36,7 @@ export class RPGService {
     inventory: async (user: User) => {
       let inventory = await RPGDatabase.inventory.findOne({ where: { user: user.id } });
       if (!inventory) {
-        inventory = await RPGDatabase.inventory.create({ user: user.id });
+        inventory = await RPGDatabase.inventory.create({ user: user.id, balance: 0 });
       }
       return inventory;
     },

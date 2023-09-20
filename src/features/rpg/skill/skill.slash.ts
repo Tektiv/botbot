@@ -1,6 +1,5 @@
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { RPGInteraction } from '../rpg.interaction';
 import { RPGService } from '../rpg.service';
 import { Skill, SkillsData } from './skill.model';
 import { RPGSkillService } from './skill.service';
