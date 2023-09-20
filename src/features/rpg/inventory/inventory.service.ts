@@ -1,10 +1,12 @@
+import { User } from 'discord.js';
 import { PRIMARY_KEY, SQLite } from 'resources/sqlite/sqlite.service';
 import { NUMBER, STRING } from 'sequelize';
 import { RPGDatabase } from '../rpg.database';
+import { RPGService } from '../rpg.service';
 
 export type InventoryModel = {
   user: string;
-  balance: number;
+  balance?: number;
 };
 
 export class RPGInventoryService {
@@ -15,4 +17,13 @@ export class RPGInventoryService {
       balance: { type: NUMBER, defaultValue: 0 },
     });
   }
+
+  static patch = {
+    balance: {
+      add: async (user: User, amount: number) => {
+        const inventoryEntry = await RPGService.getUser.inventory(user);
+        await inventoryEntry.increment('balance', { by: amount });
+      },
+    },
+  };
 }

@@ -9,6 +9,7 @@ import { EmojiService } from 'features/emoji/emoji.service';
 import { Config } from 'assets/config/config.service';
 import { SQLite } from 'resources/sqlite/sqlite.service';
 import { RPGService } from 'features/rpg/rpg.service';
+import { CasinoService } from 'features/casino/casino.service';
 
 export const bot = new Client({
   intents: [
@@ -34,7 +35,9 @@ bot.once('ready', async () => {
   await bot.initApplicationCommands();
 
   await EmojiService.init();
+
   await RPGService.init();
+  await CasinoService.init();
 
   // To clear all guild commands, uncomment this line,
   // This is useful when moving from guild commands to global commands
