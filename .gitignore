@@ -4,7 +4,6 @@
 .vscode
 .env
 .env.local
-package-lock.json
 
 # folders
 build
@@ -13,5 +12,5 @@ node_modules
 #config
 config.json
 
-#database
+# database
 database.sqlite
