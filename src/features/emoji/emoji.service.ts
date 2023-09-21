@@ -1,6 +1,6 @@
+import { Environment } from '@utils/env.util';
 import { ObjectUtils } from '@utils/object.util';
 import { Request } from '@utils/request.util';
-import { Config } from 'assets/config/config.service';
 import { Guild, GuildEmoji } from 'discord.js';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -10,9 +10,9 @@ export class EmojiService {
 
   static async init() {
     this.emojisRepo = await firstValueFrom(
-      Request.get(`${Config.get('CUSTOM_EMOJI.URL', '')}/latest?meta=false`, {
+      Request.get(`${Environment.get('CUSTOM_EMOJI_URL').value}/latest?meta=false`, {
         headers: {
-          'X-Master-Key': Config.get('CUSTOM_EMOJI.KEY', ''),
+          'X-Master-Key': Environment.get('CUSTOM_EMOJI_KEY').value,
         },
       }).pipe(
         map((result: Record<string, string>) =>
@@ -25,13 +25,13 @@ export class EmojiService {
   static async push(name: string, url: string): Promise<void> {
     this.emojisRepo = await firstValueFrom(
       Request.put(
-        `${Config.get('CUSTOM_EMOJI.URL', '')}`,
+        `${Environment.get('CUSTOM_EMOJI_URL').value}`,
         {
           ...this.emojisRepo,
           [name.remove(':')]: url,
         },
         {
-          headers: { 'X-Master-Key': Config.get('CUSTOM_EMOJI.KEY', '') },
+          headers: { 'X-Master-Key': Environment.get('CUSTOM_EMOJI_KEY').value },
         },
       ).pipe(
         map((response: Record<string, string>) =>

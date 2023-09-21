@@ -2,14 +2,15 @@ import '@extensions/array.extension';
 import '@extensions/string.extension';
 
 import { importx } from '@discordx/importer';
+import { Environment } from '@utils/env.util';
 import type { Interaction, Message } from 'discord.js';
 import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
-import { EmojiService } from 'features/emoji/emoji.service';
-import { Config } from 'assets/config/config.service';
-import { SQLite } from 'resources/sqlite/sqlite.service';
-import { RPGService } from 'features/rpg/rpg.service';
+import 'dotenv/config';
 import { CasinoService } from 'features/casino/casino.service';
+import { EmojiService } from 'features/emoji/emoji.service';
+import { RPGService } from 'features/rpg/rpg.service';
+import { SQLite } from 'resources/sqlite/sqlite.service';
 
 export const bot = new Client({
   intents: [
@@ -61,8 +62,7 @@ bot.on('messageCreate', (message: Message) => {
 async function run() {
   await importx(__dirname + '/{events,commands,features, assets}/**/*.{ts,js}');
 
-  Config.load();
-  const BOT_TOKEN = Config.get('BOT_TOKEN', '');
+  const BOT_TOKEN = Environment.get('DISCORD_TOKEN').value;
   if (!BOT_TOKEN) {
     throw Error('Could not find BOT_TOKEN in your environment');
   }

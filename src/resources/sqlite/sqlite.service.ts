@@ -1,4 +1,4 @@
-import { Config } from 'assets/config/config.service';
+import { Environment } from '@utils/env.util';
 import { Model, ModelStatic, Sequelize, UUID, UUIDV4 } from 'sequelize';
 
 export type DATABASE<MODEL extends Record<string, any>, CONSTRUCTOR extends Record<string, any> = MODEL> = ModelStatic<
@@ -10,13 +10,17 @@ export class SQLite {
   static sequelize: Sequelize;
 
   static init() {
-    const sqliteConfig = Config.get('SQLITE');
-    SQLite.sequelize = new Sequelize('botbot_db', sqliteConfig.USER, sqliteConfig.PASSWORD, {
-      host: sqliteConfig.HOST ?? 'localhost',
-      dialect: 'sqlite',
-      logging: false,
-      storage: 'src/resources/sqlite/database.sqlite',
-    });
+    SQLite.sequelize = new Sequelize(
+      'botbot_db',
+      Environment.get('SQLITE_USER').value,
+      Environment.get('SQLITE_PWD').value,
+      {
+        host: Environment.get('SQLITE_HOST').or('localhost').value,
+        dialect: 'sqlite',
+        logging: false,
+        storage: 'src/resources/sqlite/database.sqlite',
+      },
+    );
   }
 
   static async getId<T extends Record<string, any>, U extends Record<string, any> = T>(

@@ -9,8 +9,5 @@
 build
 node_modules
 
-#config
-config.json
-
 # database
 database.sqlite
