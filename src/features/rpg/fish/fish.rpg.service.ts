@@ -1,3 +1,5 @@
+import { Environment } from '@utils/env.util';
+import { FileUtils } from '@utils/file.util';
 import { Request } from '@utils/request.util';
 import { User } from 'discord.js';
 import { PRIMARY_KEY, SQLite } from 'resources/sqlite/sqlite.service';
@@ -13,17 +15,28 @@ export type InventoryFishModel = {
   quantity: number;
 };
 
+const FISHES_JSON_PATH = 'src/resources/fishes.json';
+
 export class RPGFishService {
   static fishes: RPGFishes = new RPGFishes();
 
   static async init() {
-    const fishesJSON = await firstValueFrom(
-      Request.get('https://raw.githubusercontent.com/alexislours/ACNHAPI/master/fish.json'),
-    );
+    let fishes: any[];
+    if (!FileUtils.exists(FISHES_JSON_PATH)) {
+      fishes = await firstValueFrom(
+        Request.get('https://api.nookipedia.com/nh/fish', {
+          headers: {
+            'X-API-KEY': Environment.get('NOOKIEPEDIA_APIKEY').value,
+          },
+        }),
+      );
 
-    this.fishes = new RPGFishes(
-      ...Object.entries(JSON.parse(fishesJSON)).map(([name, data]: [string, any]) => new RPGFish(name, data)),
-    );
+      FileUtils.json.create(FISHES_JSON_PATH, JSON.stringify(fishes));
+    } else {
+      fishes = FileUtils.json.read<any[]>(FISHES_JSON_PATH)!;
+    }
+
+    this.fishes = new RPGFishes(...fishes.map((data: any) => new RPGFish(data)));
 
     RPGDatabase.fishInventory = SQLite.sequelize.define('inventory_fish', {
       id: PRIMARY_KEY,

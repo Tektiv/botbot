@@ -2,6 +2,8 @@ import { User } from 'discord.js';
 import { RPGService } from '../rpg.service';
 import { Skill } from '../skill/skill.model';
 import { RPGSkillService } from '../skill/skill.service';
+import { ArrayUtils } from '@utils/array.util';
+import { DateUtils } from '@utils/date.util';
 
 export enum RPGFishRarity {
   COMMON = 'Common',
@@ -25,20 +27,52 @@ export class RPGFish {
     hours: number[];
   };
 
-  constructor(name: string, data: Record<string, any>) {
-    this.name = name.replace(/_/g, ' ');
-    this.rarity = data.availability.rarity;
-    this.price = data.price;
-    this.icon = data.icon_uri;
-    const match = (<string>data['catch-phrase']).match(new RegExp(`^(.*${this.name}(?:!|\.\.\.)) (.*)$`));
+  constructor(data: Record<string, any>) {
+    this.name = data.name;
+    this.rarity = data.rarity;
+    this.price = data.sell_nook;
+    this.icon = data.image_url;
+
+    const match = data.catchphrases[0].match(new RegExp(`^(.*${this.name}(?:!|\.\.\.)) (.*)$`, 'i'));
     this.catch = {
-      phrase: match?.[1] ?? `I cautght a ${this.name}!`,
+      phrase: match?.[1] ?? `I caught a ${this.name}!`,
       joke: match?.[2],
     };
+
+    const months = data.north.availability_array
+      .map((availability: { months: string }) => availability.months.replace(/ (?!y)/g, ''))
+      .join(';');
+    const time = data.north.availability_array[0].time.replace(/ (?!d)/g, '');
     this.availability = {
-      months: data.availability['month-array-northern'],
-      hours: data.availability['time-array'],
+      months: this.mapAvailabilityToNumbers(months),
+      hours: this.mapAvailabilityToNumbers(time.includes('&') ? 'All day' : time),
     };
+  }
+
+  private mapAvailabilityToNumbers(data: string): number[] {
+    if (data === 'All year') {
+      return ArrayUtils.generateNumbersFromXToY(1, 12);
+    }
+    if (data === 'All day') {
+      return ArrayUtils.generateNumbersFromXToY(0, 23);
+    }
+
+    if (data.includes('AM') || data.includes('PM')) {
+      const hours = data.split('–').map(DateUtils.getHourNumberFromFormat);
+      if (hours.length === 1) {
+        return [hours[0]];
+      }
+      return ArrayUtils.generateNumbersFromXToY(hours[0], hours[1], 23);
+    } else {
+      const availabilities = data.split(';').map((availability) => {
+        const months = availability.split('–').map(DateUtils.getMonthNumberFromName);
+        if (months.length === 1) {
+          return months[0];
+        }
+        return ArrayUtils.generateNumbersFromXToY(months[0], months[1], 12, 1);
+      });
+      return availabilities.flat();
+    }
   }
 
   rarityTo = {

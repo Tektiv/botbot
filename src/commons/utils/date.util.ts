@@ -16,4 +16,12 @@ export class DateUtils {
 
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
   }
+
+  static getMonthNumberFromName(month: string): number {
+    return new Date(Date.parse(`${month} 1, 2000`)).getMonth() + 1;
+  }
+
+  static getHourNumberFromFormat(hour: string): number {
+    return (parseInt(hour) + (hour.includes('PM') ? 12 : 0)) % 24;
+  }
 }
