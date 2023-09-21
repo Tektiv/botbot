@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { NUMBER, Op, STRING, UUID } from 'sequelize';
 import { RPGDatabase } from '../rpg.database';
 import { RPGService } from '../rpg.service';
-import { RPGFish, RPGFishes, RPGFishRarity } from './fish.rpg.model';
+import { RPGFish, RPGFishes } from './fish.rpg.model';
 
 export type InventoryFishModel = {
   userInventoryId: string;

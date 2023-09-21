@@ -1,9 +1,9 @@
 import { MessageGuard } from '@guards/message.guard';
+import { MiscGuard } from '@guards/misc.guard';
 import { UserGuard } from '@guards/user.guard';
-import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { MathUtils } from '@utils/math.util';
 import { Utils } from '@utils/util';
-import { MiscGuard } from '@guards/misc.guard';
+import { ArgsOf, Discord, Guard, On } from 'discordx';
 
 @Discord()
 export class UserMessageEvent {

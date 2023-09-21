@@ -1,6 +1,6 @@
-import { EmojiService } from 'features/emoji/emoji.service';
 import { ApplicationCommandOptionType, AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
+import { EmojiService } from 'features/emoji/emoji.service';
 
 @Discord()
 export class EmojiSlash {

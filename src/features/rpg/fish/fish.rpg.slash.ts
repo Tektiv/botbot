@@ -1,12 +1,4 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonInteraction,
-  ButtonStyle,
-  CommandInteraction,
-  EmbedBuilder,
-  MessageActionRowComponentBuilder,
-} from 'discord.js';
+import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
 import { RPGInteraction } from '../rpg.interaction';
 import { Skill } from '../skill/skill.model';

@@ -1,8 +1,8 @@
 import { UserGuard } from '@guards/user.guard';
-import { EmojiService } from 'features/emoji/emoji.service';
 import { RegExps } from 'commons/regexp.list';
-import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { ReactionEmoji } from 'discord.js';
+import { ArgsOf, Discord, Guard, On } from 'discordx';
+import { EmojiService } from 'features/emoji/emoji.service';
 
 @Discord()
 export class BotbotMessageEvent {

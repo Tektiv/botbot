@@ -1,5 +1,5 @@
-import './array.extension';
 import { MathUtils } from '@utils/math.util';
+import './array.extension';
 
 describe('ArrayExtension', () => {
   describe('first', () => {
