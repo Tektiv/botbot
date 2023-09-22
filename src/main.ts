@@ -3,6 +3,7 @@ import '@extensions/string.extension';
 
 import { importx } from '@discordx/importer';
 import { Environment } from '@utils/env.util';
+import { ConsoleHelper, Logger } from '@utils/logger';
 import type { Interaction, Message } from 'discord.js';
 import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
@@ -20,25 +21,23 @@ export const bot = new Client({
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.GuildMessageReactions,
   ],
-
-  silent: false,
-
-  simpleCommand: {
-    prefix: '!',
-  },
 });
 
 bot.once('ready', async () => {
   // Make sure all guilds are cached
+  Logger.group('log', 'Bot syncs...');
   await bot.guilds.fetch();
-
-  // Synchronize applications commands with Discord
+  Logger.log(`${ConsoleHelper.Check} Guilds`);
   await bot.initApplicationCommands();
+  Logger.log(`${ConsoleHelper.Check} Commands`);
+  Logger.degroup();
 
   await EmojiService.init();
 
+  Logger.group('log', 'Databases initialisation...');
   await RPGService.init();
   await CasinoService.init();
+  Logger.degroup();
 
   // To clear all guild commands, uncomment this line,
   // This is useful when moving from guild commands to global commands
@@ -48,8 +47,18 @@ bot.once('ready', async () => {
   //    ...bot.guilds.cache.map((g) => g.id)
   //  );
 
-  console.log('Bot started');
+  Logger.log('Bot initialised\nReady to roll!');
 });
+
+bot.on('error', (error) => {
+  Logger.group('error', `${error.name} - ${error.message}`);
+  if (error.stack) {
+    Logger.error(error.stack);
+  }
+  Logger.degroup();
+});
+
+bot.on('warn', (message) => Logger.warn(message));
 
 bot.on('interactionCreate', (interaction: Interaction) => {
   bot.executeInteraction(interaction);
@@ -64,10 +73,12 @@ async function run() {
 
   const BOT_TOKEN = Environment.get('DISCORD_TOKEN').value;
   if (!BOT_TOKEN) {
-    throw Error('Could not find BOT_TOKEN in your environment');
+    Logger.error('Could not find DISCORD_TOKEN\nCheck your .env file to make sure the value is set');
+    process.exit(1);
   }
 
   SQLite.init();
+  Logger.log('SQLite initialised');
 
   await bot.login(BOT_TOKEN);
 }

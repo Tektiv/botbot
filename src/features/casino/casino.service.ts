@@ -1,12 +1,13 @@
 import { User } from 'discord.js';
 import { CasinoDatabase } from './casino.database';
 import { CasinoStreakService } from './streak/streak.service';
+import { ConsoleHelper, Logger } from '@utils/logger';
 
 export class CasinoService {
   static async init() {
     await this._init.streak();
 
-    console.log('Casino init');
+    Logger.log(`${ConsoleHelper.Check} Casino`);
   }
 
   private static _init = {

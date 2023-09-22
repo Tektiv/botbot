@@ -5,6 +5,7 @@ import { RPGInventoryService } from './inventory/inventory.service';
 import { RPGDatabase } from './rpg.database';
 import { Skill } from './skill/skill.model';
 import { RPGSkillService } from './skill/skill.service';
+import { ConsoleHelper, Logger } from '@utils/logger';
 
 export class RPGService {
   static async init() {
@@ -13,7 +14,7 @@ export class RPGService {
 
     await this._init.skills();
 
-    console.log('RPG init');
+    Logger.log(`${ConsoleHelper.Check} RPG`);
   }
 
   private static _init = {
