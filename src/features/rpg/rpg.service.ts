@@ -1,3 +1,4 @@
+import { ConsoleHelper, Logger } from '@helpers/logger';
 import { User } from 'discord.js';
 import { Op } from 'sequelize';
 import { RPGFishService } from './fish/fish.rpg.service';
@@ -5,7 +6,6 @@ import { RPGInventoryService } from './inventory/inventory.service';
 import { RPGDatabase } from './rpg.database';
 import { Skill } from './skill/skill.model';
 import { RPGSkillService } from './skill/skill.service';
-import { ConsoleHelper, Logger } from '@utils/logger';
 
 export class RPGService {
   static async init() {

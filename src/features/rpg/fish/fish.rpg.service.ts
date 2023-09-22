@@ -1,4 +1,4 @@
-import { Environment } from '@utils/env.util';
+import { Environment } from '@helpers/environment';
 import { FileUtils } from '@utils/file.util';
 import { Request } from '@utils/request.util';
 import { User } from 'discord.js';

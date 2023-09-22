@@ -1,4 +1,4 @@
-import { Environment } from '@utils/env.util';
+import { Environment } from '@helpers/environment';
 import { ObjectUtils } from '@utils/object.util';
 import { Request } from '@utils/request.util';
 import { Guild, GuildEmoji } from 'discord.js';

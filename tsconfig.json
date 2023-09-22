@@ -20,6 +20,7 @@
       "@guards/*": ["guards/*"],
       "@commands/*": ["commands/*"],
       "@utils/*": ["commons/utils/*"],
+      "@helpers/*": ["commons/helpers/*"],
       "@extensions/*": ["commons/extensions/*"]
     }
   },

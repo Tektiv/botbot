@@ -1,4 +1,4 @@
-import { Environment } from '@utils/env.util';
+import { Environment } from '@helpers/environment';
 import { Model, ModelStatic, Sequelize, UUID, UUIDV4 } from 'sequelize';
 
 export type DATABASE<MODEL extends Record<string, any>, CONSTRUCTOR extends Record<string, any> = MODEL> = ModelStatic<

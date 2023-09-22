@@ -2,8 +2,8 @@ import '@extensions/array.extension';
 import '@extensions/string.extension';
 
 import { importx } from '@discordx/importer';
-import { Environment } from '@utils/env.util';
-import { ConsoleHelper, Logger } from '@utils/logger';
+import { Environment } from '@helpers/environment';
+import { ConsoleHelper, Logger } from '@helpers/logger';
 import type { Interaction, Message } from 'discord.js';
 import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
