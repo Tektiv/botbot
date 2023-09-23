@@ -1,7 +1,9 @@
 import { Environment } from '@helpers/environment';
 import { ObjectUtils } from '@utils/object.util';
 import { Request } from '@utils/request.util';
+import { Guilds } from 'commons/discord/guilds.discord';
 import { Guild, GuildEmoji } from 'discord.js';
+import { bot } from 'main';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -90,4 +92,11 @@ export async function Emoji(name: string, guild: Guild): Promise<string> {
     guild.emojis.cache.find((emoji) => emoji.name === name.remove(':')) ||
     (EmojiService.emojisRepo[name.remove(':')] != null ? await EmojiService.replaceEmojis(name, guild) : name)
   ).toString();
+}
+
+export async function Emoji2(name: string, guildId = Guilds.botbot): Promise<string | undefined> {
+  const emojiGuild = bot.guilds.cache.get(guildId);
+  await emojiGuild?.fetch();
+
+  return emojiGuild?.emojis.cache.find((emoji) => emoji.name === name)?.toString();
 }

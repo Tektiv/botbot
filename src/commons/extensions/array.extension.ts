@@ -33,6 +33,8 @@ declare global {
      * @example [1, 2, 1, 3, 1, 1, 4] => [1, 2, 3, 4]
      */
     removeDuplicates(): T[];
+
+    randomise(): T[];
   }
 }
 
@@ -66,4 +68,18 @@ Array.prototype.pickOneUsingWeight = function <T>(this: T[], weights: number[]):
 
 Array.prototype.removeDuplicates = function <T>(this: T[]): T[] {
   return this.filter((value, index, array) => array.indexOf(value) === index);
+};
+
+Array.prototype.randomise = function <T>(this: T[]): T[] {
+  let currentIndex = this.length;
+  let randomIndex: number;
+
+  while (currentIndex > 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [this[currentIndex], this[randomIndex]] = [this[randomIndex], this[currentIndex]];
+  }
+
+  return this;
 };

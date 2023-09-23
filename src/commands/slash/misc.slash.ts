@@ -17,7 +17,7 @@ export class MiscSlash {
     interaction: CommandInteraction,
     client: Client,
   ) {
-    const emojiGuild = client.guilds.cache.get(Guilds.ketchup);
+    const emojiGuild = client.guilds.cache.get(Guilds.botbot);
     await emojiGuild?.fetch();
 
     interaction.reply(
