@@ -1,6 +1,7 @@
 import { Embeds } from 'commons/discord/embeds.discord';
 import {
   ActionRowBuilder,
+  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
@@ -8,14 +9,33 @@ import {
   EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from 'discord.js';
-import { Discord, Slash } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import { Emoji2 } from 'features/emoji/emoji.service';
 import { BlackjackGame } from './blackjack.game';
+import { RPGService } from 'features/rpg/rpg.service';
+import { Configuration } from '@helpers/config';
 
 @Discord()
 export class BlackjackSlash {
   @Slash({ description: 'Jack Black drawing a black jack in blackjack' })
-  async blackjack(interaction: CommandInteraction) {
+  async blackjack(
+    @SlashOption({
+      description: 'How much do you want to bet?',
+      name: 'bet',
+      required: false,
+      type: ApplicationCommandOptionType.Number,
+    })
+    bet = 0,
+    interaction: CommandInteraction,
+  ) {
+    const inventory = await RPGService.getUser.inventory(interaction.user);
+    const balance = inventory.get('balance') as number;
+
+    if (balance < bet) {
+      interaction.reply(Embeds.warning(`You don't have enough ${Configuration.credits.trim()} in your balance.`));
+      return;
+    }
+
     const game = new BlackjackGame();
 
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -44,8 +64,24 @@ export class BlackjackSlash {
       }
 
       const state = game.stay();
+      if (bet > 0) {
+        switch (state) {
+          case -2:
+          case -1:
+            await inventory.decrement('balance', { by: bet });
+            break;
+          case 1:
+            await inventory.increment('balance', { by: bet });
+            break;
+          case 2:
+            await inventory.increment('balance', { by: Math.ceil(1.5 * bet) });
+            break;
+          default:
+        }
+      }
+
       await reply.edit({
-        embeds: [this.finishEmbed(game, state)],
+        embeds: [await this.finishEmbed(game, state, bet)],
         components: [],
       });
       return;
@@ -65,7 +101,7 @@ export class BlackjackSlash {
       });
   }
 
-  private finishEmbed(game: BlackjackGame, state: number) {
+  private async finishEmbed(game: BlackjackGame, state: number, bet: number) {
     const messages = [
       ':no_entry_sign:  Busted!',
       ':no_entry_sign:  You lost',
@@ -73,8 +109,15 @@ export class BlackjackSlash {
       ':tada:  You won!',
       ':champagne:  BLACKJACK!!',
     ];
+    const betMessages = [
+      `You lost ${bet}${Configuration.credits}...`,
+      `You lost ${bet}${Configuration.credits}...`,
+      'At least you did not lost anything',
+      `You won ${2 * bet}${Configuration.credits}!`,
+      `You won ${Math.ceil(2.5 * bet)}${Configuration.credits}!`,
+    ];
 
-    return new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setTitle(messages[state + 2])
       .addFields({
         name: `Dealer hand (${game.dealerHand.value})`,
@@ -84,5 +127,13 @@ export class BlackjackSlash {
         name: `Your hand (${game.playerHand.value})`,
         value: `**${game.playerHand.toString(false)}**`,
       });
+
+    if (bet > 0) {
+      embed.setFooter({
+        text: betMessages[state + 2],
+      });
+    }
+
+    return embed;
   }
 }
