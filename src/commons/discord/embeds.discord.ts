@@ -1,6 +1,16 @@
 import { EmbedBuilder } from 'discord.js';
 
 export const Embeds = {
+  success: (message: string) => ({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#4CAF4F')
+        .setAuthor({ name: 'Success', iconURL: 'https://i.imgur.com/861VWre.png' })
+        .setDescription(message),
+    ],
+    ephemeral: true,
+  }),
+
   error: (message: string) => ({
     embeds: [
       new EmbedBuilder()
