@@ -91,6 +91,14 @@ export class RPGFishService {
 
       return fishes.reduce((sum, fishEntry) => sum + <number>fishEntry.get('quantity'), 0);
     },
+    fishByUser: async (fish: RPGFish, user: User): Promise<number> => {
+      const userInventoryId = await SQLite.getId(RPGService.getUser.inventory(user));
+      const fishEntry = await RPGDatabase.fishInventory.findOne({
+        where: { userInventoryId, fish: fish.name },
+        attributes: ['quantity'],
+      });
+      return (fishEntry?.get('quantity') as number) ?? 0;
+    },
   };
 
   static patch = {

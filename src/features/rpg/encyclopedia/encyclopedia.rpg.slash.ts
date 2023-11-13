@@ -15,14 +15,22 @@ export class EncyclopediaSlash {
       required: true,
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
+        const fishes = RPGFishService.fishes.filter(
+          (fish) =>
+            new RegExp(interaction.options.getFocused(true).value.toLowerCase()).test(fish.name.toLowerCase()) &&
+            fish?.name != null,
+        );
+
+        if (<any>fishes[0] === 0) {
+          interaction.respond([]);
+          return;
+        }
+
         interaction.respond(
-          RPGFishService.fishes
-            .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
-            .slice(0, 24)
-            .map((fish) => ({
-              name: fish.name.capitalize(),
-              value: fish.name,
-            })),
+          fishes.slice(0, 24).map((fish) => ({
+            name: fish.name.capitalize(),
+            value: fish.name,
+          })),
         );
       },
     })
@@ -38,11 +46,11 @@ export class EncyclopediaSlash {
       return;
     }
 
-    const numbers = await RPGFishService.count.fishOccurences(fish);
+    const quantity = await RPGFishService.count.fishByUser(fish, interaction.user);
     const embed = new EmbedBuilder()
       .setTitle(`${fish.name.capitalize()}`)
       .addFields({ name: 'Rarity', value: `${fish.rarityTo.symbol()} ${fish.rarity}` })
-      .addFields({ name: '# fished', value: numbers.toString() })
+      .addFields({ name: '# you fished', value: quantity.toString() })
       .addFields({ name: 'Months', value: fish.monthAvailability, inline: true })
       .addFields({ name: '\u200b', value: '\u200b', inline: true })
       .addFields({ name: 'Hours', value: fish.hoursAvailability, inline: true })
