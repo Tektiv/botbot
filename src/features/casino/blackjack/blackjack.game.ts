@@ -1,4 +1,4 @@
-import { Card, Deck } from '../casino.model';
+import { Card, CardSymbol, Deck } from '../casino.model';
 
 export const BLACKJACK = 21;
 
@@ -77,7 +77,7 @@ export class BlackjackGame {
       this.dealerHand.push(this.deck.draw()!);
     }
 
-    if (this.dealerHand.value > 21) {
+    if (this.dealerHand.value > BLACKJACK) {
       return 1;
     }
 

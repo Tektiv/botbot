@@ -1,3 +1,4 @@
+import { Configuration } from '@helpers/config';
 import { Embeds } from 'commons/discord/embeds.discord';
 import {
   ActionRowBuilder,
@@ -11,9 +12,12 @@ import {
 } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import { Emoji2 } from 'features/emoji/emoji.service';
-import { BlackjackGame } from './blackjack.game';
+import { InventoryModel } from 'features/rpg/inventory/inventory.service';
 import { RPGService } from 'features/rpg/rpg.service';
-import { Configuration } from '@helpers/config';
+import { Model } from 'sequelize';
+import { BLACKJACK, BlackjackGame } from './blackjack.game';
+
+type Inventory = Model<InventoryModel, InventoryModel>;
 
 @Discord()
 export class BlackjackSlash {
@@ -37,6 +41,14 @@ export class BlackjackSlash {
     }
 
     const game = new BlackjackGame();
+
+    if (game.playerHand.value === BLACKJACK) {
+      await interaction.reply({
+        embeds: [await this.finishGame(game, inventory, bet)],
+        components: [],
+      });
+      return;
+    }
 
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder().setLabel('Hit').setStyle(ButtonStyle.Secondary).setCustomId('blackjack_hit'),
@@ -63,29 +75,33 @@ export class BlackjackSlash {
         return;
       }
 
-      const state = game.stay();
-      if (bet > 0) {
-        switch (state) {
-          case -2:
-          case -1:
-            await inventory.decrement('balance', { by: bet });
-            break;
-          case 1:
-            await inventory.increment('balance', { by: bet });
-            break;
-          case 2:
-            await inventory.increment('balance', { by: Math.ceil(1.5 * bet) });
-            break;
-          default:
-        }
-      }
-
       await reply.edit({
-        embeds: [await this.finishEmbed(game, state, bet)],
+        embeds: [await this.finishGame(game, inventory, bet)],
         components: [],
       });
       return;
     });
+  }
+
+  private async finishGame(game: BlackjackGame, inventory: Inventory, bet: number): Promise<EmbedBuilder> {
+    const state = game.stay();
+    if (bet > 0) {
+      switch (state) {
+        case -2:
+        case -1:
+          await inventory.decrement('balance', { by: bet });
+          break;
+        case 1:
+          await inventory.increment('balance', { by: bet });
+          break;
+        case 2:
+          await inventory.increment('balance', { by: Math.ceil(1.5 * bet) });
+          break;
+        default:
+      }
+    }
+
+    return await this.finishEmbed(game, state, bet);
   }
 
   private async gameEmbed(game: BlackjackGame) {
