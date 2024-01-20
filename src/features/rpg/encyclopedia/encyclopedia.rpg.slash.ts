@@ -1,4 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { Configuration } from '@helpers/config';
+import { Embeds } from 'commons/discord/embeds.discord';
 import { ApplicationCommandOptionType, AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import { RPGFishService } from '../fish/fish.rpg.service';
@@ -15,6 +17,10 @@ export class EncyclopediaSlash {
       required: true,
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
+        if (!Configuration.checkIfFeatureIsEnabled('fish')) {
+          return;
+        }
+
         const fishes = RPGFishService.fishes.filter(
           (fish) =>
             new RegExp(interaction.options.getFocused(true).value.toLowerCase()).test(fish.name.toLowerCase()) &&
@@ -37,12 +43,13 @@ export class EncyclopediaSlash {
     fishName: string,
     interaction: CommandInteraction,
   ) {
+    if (!Configuration.checkIfFeatureIsEnabled('fish', interaction)) {
+      return;
+    }
+
     const fish = RPGFishService.fishes.find((fish) => fish.name === fishName);
     if (fish == null) {
-      interaction.reply({
-        content: `Fish "${fishName}" not found...`,
-        ephemeral: true,
-      });
+      interaction.reply(Embeds.warning(`Fish **${fishName}** not found...`));
       return;
     }
 

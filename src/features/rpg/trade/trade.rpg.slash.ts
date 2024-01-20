@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, MessageActionRowComponentBuilder } from '@discordjs/builders';
+import { Configuration } from '@helpers/config';
 import { Embeds } from 'commons/discord/embeds.discord';
 import {
   ApplicationCommandOptionType,
@@ -23,6 +24,10 @@ export class TradeSlash {
       required: true,
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
+        if (!Configuration.checkIfFeatureIsEnabled('fish')) {
+          return;
+        }
+
         interaction.respond(
           (await RPGFishService.get.fishesFromUser(interaction.user))
             .filter((fish) => new RegExp(interaction.options.getFocused(true).value).test(fish.name))
@@ -48,6 +53,10 @@ export class TradeSlash {
       required: true,
       type: ApplicationCommandOptionType.String,
       autocomplete: async function (interaction: AutocompleteInteraction) {
+        if (!Configuration.checkIfFeatureIsEnabled('fish')) {
+          return;
+        }
+
         const traderId = interaction.options.get('trader')!.value;
         if (traderId == null) {
           return;
@@ -70,14 +79,16 @@ export class TradeSlash {
     traderFishName: string,
     interaction: CommandInteraction,
   ) {
+    if (!Configuration.checkIfFeatureIsEnabled('fish', interaction)) {
+      return;
+    }
+
     const fish = RPGFishService.fishes.findByName(fishName);
     const traderFish = RPGFishService.fishes.findByName(traderFishName);
 
     if (fish == null || traderFish == null) {
-      interaction.reply({
-        content: 'Unknown fish(es)...',
-        ephemeral: true,
-      });
+      interaction.reply(Embeds.warning('Unknown fish(es)'));
+      return;
     }
 
     const embed = new EmbedBuilder()

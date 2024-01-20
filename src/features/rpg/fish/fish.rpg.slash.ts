@@ -1,3 +1,4 @@
+import { Configuration } from '@helpers/config';
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
 import { RPGInteraction } from '../rpg.interaction';
@@ -8,6 +9,10 @@ import { RPGFishService } from './fish.rpg.service';
 export class RPGFishSlash {
   @Slash({ description: "Hope you'll catch something nice!" })
   async fish(interaction: CommandInteraction) {
+    if (!Configuration.checkIfFeatureIsEnabled('fish', interaction)) {
+      return;
+    }
+
     const fish = await RPGFishService.actions.fish(interaction.user);
 
     const embed = new EmbedBuilder()

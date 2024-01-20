@@ -1,4 +1,5 @@
 import { UserGuard } from '@guards/user.guard';
+import { Configuration } from '@helpers/config';
 import { RegExps } from 'commons/regexp.list';
 import { ReactionEmoji } from 'discord.js';
 import { ArgsOf, Discord, Guard, On } from 'discordx';
@@ -9,6 +10,10 @@ export class BotbotMessageEvent {
   @On({ event: 'messageCreate' })
   @Guard(UserGuard.BotbotMessage)
   async cleanEmojisInMessage([message]: ArgsOf<'messageCreate'>) {
+    if (!Configuration.checkIfFeatureIsEnabled('emoji')) {
+      return;
+    }
+
     const emojis = (message.content.match(RegExps.customEmojis) || [])
       .filter((emoji) => EmojiService.emojisRepo[emoji.match(RegExps.customEmoji)![1]] != null)
       .removeDuplicates();
@@ -22,8 +27,10 @@ export class BotbotMessageEvent {
   @On({ event: 'messageReactionAdd' })
   @Guard(UserGuard.BotbotReaction)
   async cleanEmojisInReaction([reaction]: ArgsOf<'messageReactionAdd'>) {
-    if (EmojiService.emojisRepo[(<ReactionEmoji>(<any>reaction)._emoji).name!.remove(':')] != null) {
-      await EmojiService.removeFromGuild(reaction.message.guild!, (<ReactionEmoji>(<any>reaction)._emoji).id!);
+    if (!Configuration.checkIfFeatureIsEnabled('emoji')) {
+      return;
     }
+
+    await EmojiService.removeFromGuild(reaction.message.guild!, (<ReactionEmoji>(<any>reaction)._emoji).id!);
   }
 }

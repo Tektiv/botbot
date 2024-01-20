@@ -6,7 +6,7 @@ A Discord bot made in TypeScript
 
 ## Config
 
-Create the file `src/assets/config/config.json` following the model on the same folder.
+Create the file `.env` (using the template [`.env.example`](.env.example)) and fill it with the correct information
 
 ## Run
 

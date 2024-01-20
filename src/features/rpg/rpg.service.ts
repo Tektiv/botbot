@@ -1,3 +1,4 @@
+import { Configuration } from '@helpers/config';
 import { ConsoleHelper, Logger } from '@helpers/logger';
 import { User } from 'discord.js';
 import { Op } from 'sequelize';
@@ -10,7 +11,9 @@ import { RPGSkillService } from './skill/skill.service';
 export class RPGService {
   static async init() {
     await this._init.inventory();
-    await this._init.fish();
+    if (Configuration.checkIfFeatureIsEnabled('fish')) {
+      await this._init.fish();
+    }
 
     await this._init.skills();
 
