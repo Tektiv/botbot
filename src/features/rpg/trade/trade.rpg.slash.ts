@@ -87,7 +87,7 @@ export class TradeSlash {
     const traderFish = RPGFishService.fishes.findByName(traderFishName);
 
     if (fish == null || traderFish == null) {
-      interaction.reply(Embeds.warning('Unknown fish(es)'));
+      interaction.reply(Embeds.error('Unknown fish(es)'));
       return;
     }
 
@@ -117,7 +117,7 @@ export class TradeSlash {
 
     reply.createMessageComponentCollector().on('collect', async (click: ButtonInteraction) => {
       if (click.user.id !== trader.user.id) {
-        click.reply(Embeds.warning('This interaction is not for you'));
+        click.reply(Embeds.nope('This interaction is not for you'));
         return;
       }
 

@@ -49,7 +49,7 @@ export class EncyclopediaSlash {
 
     const fish = RPGFishService.fishes.find((fish) => fish.name === fishName);
     if (fish == null) {
-      interaction.reply(Embeds.warning(`Fish **${fishName}** not found...`));
+      interaction.reply(Embeds.error(`Fish **${fishName}** not found...`));
       return;
     }
 

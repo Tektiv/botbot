@@ -36,7 +36,7 @@ export class BlackjackSlash {
     const balance = inventory.get('balance') as number;
 
     if (balance < bet) {
-      interaction.reply(Embeds.warning(`You don't have enough ${Configuration.credits.trim()} in your balance.`));
+      interaction.reply(Embeds.nope(`You don't have enough ${Configuration.credits.trim()} in your balance.`));
       return;
     }
 
@@ -62,7 +62,7 @@ export class BlackjackSlash {
 
     reply.createMessageComponentCollector().on('collect', async (click: ButtonInteraction) => {
       if (click.user.id !== interaction.user.id) {
-        click.reply(Embeds.warning('This interaction is not for you'));
+        click.reply(Embeds.nope('This interaction is not for you'));
         return;
       }
 

@@ -1,9 +1,10 @@
+import { Embeds } from 'commons/discord/embeds.discord';
+import { Configuration } from 'commons/helpers/config';
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { CasinoStreakService } from './streak.service';
 import { RPGInventoryService } from 'features/rpg/inventory/inventory.service';
 import { CasinoService } from '../casino.service';
-import { Configuration } from 'commons/helpers/config';
+import { CasinoStreakService } from './streak.service';
 
 @Discord()
 export class CasinoSlash {
@@ -12,14 +13,7 @@ export class CasinoSlash {
     const update = await CasinoStreakService.actions.daily(interaction.user);
 
     if (!update) {
-      const streakEmbed = new EmbedBuilder()
-        .setTitle('🚫  Nope')
-        .setDescription('You already checked in today.\nCome back tomorrow to continue your streak!');
-
-      interaction.reply({
-        embeds: [streakEmbed],
-        ephemeral: true,
-      });
+      interaction.reply(Embeds.nope('You already checked in today.', 'Come back tomorrow to continue your streak!'));
       return;
     }
 

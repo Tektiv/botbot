@@ -44,7 +44,7 @@ export class InventorySlash {
     const balance = inventory.get('balance') as number;
 
     if (balance < gift) {
-      interaction.reply(Embeds.warning(`You don't have enough ${Configuration.credits.trim()} in your balance.`));
+      interaction.reply(Embeds.nope(`You don't have enough ${Configuration.credits.trim()} in your balance.`));
       return;
     }
 

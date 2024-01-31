@@ -56,7 +56,7 @@ export class Game421Context {
 
     reply.createMessageComponentCollector().on('collect', async (click: ButtonInteraction) => {
       if (click.user.id !== receiver.user.id) {
-        click.reply(Embeds.warning('This interaction is not for you'));
+        click.reply(Embeds.nope('This interaction is not for you'));
         return;
       }
 
