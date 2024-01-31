@@ -41,6 +41,11 @@ export const MessageTriggerList: MessageTrigger[] = [
     action: MessageTriggerAction.FUNCTION,
     args: [hungry],
   },
+  {
+    regexp: /^oui$/,
+    action: MessageTriggerAction.CHANNEL_MESSAGE,
+    args: ['le footballeur ?'],
+  },
 ];
 
 async function toutOublier([message]: ArgsOf<'messageCreate'>): Promise<void> {
