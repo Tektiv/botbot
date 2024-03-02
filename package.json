@@ -8,10 +8,10 @@
     "postinstall": "husky install",
     "build": "tsc",
     "build:changelog": "npx @discordx/changelog --root=src",
-    "dev": "ts-node-esm src/main.ts",
     "test": "jest",
     "start": "node build/main.js",
-    "watch": "nodemon --exec ts-node-esm src/main.ts"
+    "start:dev": "ts-node-esm src/main.ts",
+    "start:watch": "nodemon --exec ts-node-esm src/main.ts"
   },
   "dependencies": {
     "@discordx/importer": "^1.1.10",
