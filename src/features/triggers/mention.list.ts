@@ -16,11 +16,11 @@ export const MessageMentionList: MessageTrigger[] = [
     action: MessageTriggerAction.CHANNEL_MESSAGE,
     args: ['ouais', 'neh', "t'aimerais bien savoir hein ?", 'oé', "j'ai pas les mots"],
   },
-  {
-    regexp: /(salut|coucou|bonjour)/i,
-    action: MessageTriggerAction.REACT,
-    args: ['ralph'],
-  },
+  // {
+  //   regexp: /(salut|coucou|bonjour)/i,
+  //   action: MessageTriggerAction.REACT,
+  //   args: ['ralph'],
+  // },
   {
     regexp: /^merci/i,
     action: MessageTriggerAction.REACT,
