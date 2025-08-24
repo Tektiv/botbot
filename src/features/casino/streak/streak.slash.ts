@@ -20,12 +20,16 @@ export class CasinoSlash {
     const streak = (await CasinoService.getUser.streak(interaction.user)).get('streak') as number;
     await RPGInventoryService.patch.balance.add(interaction.user, Math.min(streak, 5) * 100);
 
-    const streakEmbed = new EmbedBuilder()
-      .setTitle('✅  Daily claimed')
-      .setDescription(`${Math.min(streak, 5) * 100}${Configuration.credits} added to your inventory!`)
-      .addFields({ name: 'Current streak', value: streak.toString() });
-    interaction.reply({
-      embeds: [streakEmbed],
-    });
+    try {
+      const streakEmbed = new EmbedBuilder()
+        .setTitle('✅  Daily claimed')
+        .setDescription(`${Math.min(streak, 5) * 100}${Configuration.credits} added to your inventory!`)
+        .addFields({ name: 'Current streak', value: streak.toString() });
+      interaction.reply({
+        embeds: [streakEmbed],
+      });
+    } catch (_) {
+      interaction.channel?.send(`It worked, you are at ${streak} day!`);
+    }
   }
 }
