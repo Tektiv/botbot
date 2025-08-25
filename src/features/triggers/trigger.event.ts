@@ -4,6 +4,7 @@ import { UserGuard } from '@guards/user.guard';
 import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { GeminiAI } from 'features/ai/gemini.ai';
 import { Emoji } from 'features/emoji/emoji.service';
+import { bot } from 'main';
 import { MessageTriggerList } from './trigger.list';
 import { MessageTriggerAction } from './trigger.model';
 
@@ -51,6 +52,9 @@ export class MessageTriggerEvent {
   @On({ event: 'messageCreate' })
   @Guard(UserGuard.NotBotbotMessage, MessageGuard.NotSimpleCommand, MentionGuard.Botbot)
   async triggersMention([message]: ArgsOf<'messageCreate'>) {
-    await message.channel.send(await GeminiAI.instance.textGen(message.author.username, message.content));
+    const botId = bot.user!.id;
+    const content = message.content.replace(`<@${botId}>`, '@botbot');
+
+    await message.channel.send(await GeminiAI.instance.textGen(message.author.username, content));
   }
 }
