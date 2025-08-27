@@ -57,6 +57,8 @@ bot.on('error', (error) => {
     Logger.error(error.stack);
   }
   Logger.degroup();
+
+  run();
 });
 
 bot.on('warn', (message) => Logger.warn(message));
