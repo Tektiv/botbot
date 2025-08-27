@@ -55,6 +55,8 @@ export class MessageTriggerEvent {
     const botId = bot.user!.id;
     const content = message.content.replace(`<@${botId}>`, '@botbot');
 
-    await message.channel.send(await GeminiAI.instance.textGen(message.author.username, content));
+    const textGen = await GeminiAI.instance.textGen(message.author.username, content);
+
+    await message.channel.send(textGen ?? '<Error>');
   }
 }

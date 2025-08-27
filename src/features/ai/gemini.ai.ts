@@ -41,9 +41,17 @@ export class GeminiAI {
   }
 
   public async textGen(username: string, message: string): Promise<string> {
-    const response = await this.chat.sendMessage({
-      message: [`${username}: `, message],
-    });
-    return response.text ?? '';
+    let responseText: string;
+
+    try {
+      const response = await this.chat.sendMessage({
+        message: [`${username}: `, message],
+      });
+      responseText = response.text ?? '';
+    } catch (_) {
+      responseText = '';
+    }
+
+    return responseText;
   }
 }
